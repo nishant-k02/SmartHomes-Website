@@ -1,15 +1,28 @@
 const express = require('express');
-const { mysqlConnection } = require('./config/db');
-const bodyParser = require('body-parser');
+const cors = require('cors');
+const { mysqlConnection, mongoose } = require('./config/db');
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+
 const app = express();
 
-app.use(bodyParser.json());
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-// Test Route
+// Routes
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
+
+// Default route
 app.get('/', (req, res) => {
-    res.send('Backend is running!');
+    res.send('SmartHomes Backend is running...');
 });
 
-// Start Server
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// Start the server directly from app.js
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
